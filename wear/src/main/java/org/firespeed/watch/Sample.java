@@ -86,6 +86,7 @@ public class Sample extends CanvasWatchFaceService {
         boolean mRegisteredTimeZoneReceiver = false;
         Paint mBitmapPaint;
         Paint mDrawPaint;
+        Paint mDrawStrokePaint;
         boolean mAmbient;
         private Bitmap mBackground;
         private Bitmap mHour;
@@ -128,7 +129,7 @@ public class Sample extends CanvasWatchFaceService {
             setWatchFaceStyle(new WatchFaceStyle.Builder(Sample.this)
                     .setCardPeekMode(WatchFaceStyle.PEEK_MODE_SHORT)
                     .setBackgroundVisibility(WatchFaceStyle.BACKGROUND_VISIBILITY_INTERRUPTIVE)
-                    .setShowSystemUiTime(false)
+                    .setShowSystemUiTime(true)
                     .setAcceptsTapEvents(true)
                     .build());
 
@@ -138,8 +139,13 @@ public class Sample extends CanvasWatchFaceService {
             mBitmapPaint.setFilterBitmap(true);
 
             mDrawPaint = new Paint();
-            mDrawPaint.setColor(resources.getColor(R.color.analog_hands));
-            mDrawPaint.setStrokeWidth(resources.getDimension(R.dimen.analog_hand_stroke));
+            mDrawPaint.setColor(resources.getColor(R.color.stroke));
+
+            mDrawStrokePaint = new Paint();
+//            mDrawStrokePaint.setStrokeWidth(resources.getDimension(R.dimen.analog_hand_stroke));
+            mDrawStrokePaint.setAntiAlias(true);
+//            mDrawStrokePaint.setStyle(Paint.Style.STROKE);
+            mDrawStrokePaint.setColor(resources.getColor(R.color.analog_hands));
 
             mDrawPaint.setAntiAlias(true);
             mDrawPaint.setStrokeCap(Paint.Cap.ROUND);
@@ -172,6 +178,7 @@ public class Sample extends CanvasWatchFaceService {
                 mAmbient = inAmbientMode;
                 if (mLowBitAmbient) {
                     mDrawPaint.setAntiAlias(!inAmbientMode);
+                    mDrawStrokePaint.setAntiAlias(!inAmbientMode);
                     mBitmapPaint.setFilterBitmap(!inAmbientMode);
                 }
                 invalidate();
@@ -230,10 +237,12 @@ public class Sample extends CanvasWatchFaceService {
 
                 mHoleRadius = mScale * 12f;
 
-                mHourLeft = 244f * mScale + mBackgroundLeft;
-                mHourTop = 80f * mScale + mBackgroundTop;
-                mMinuteLeft = 242f * mScale + mBackgroundLeft;
-                mMinuteTop = 54f * mScale + mBackgroundTop;
+                mHourLeft = 158f * mScale + mBackgroundLeft;
+                mHourTop = 40f * mScale + mBackgroundTop;
+                mMinuteLeft = 234f * mScale + mBackgroundLeft;
+                mMinuteTop = 34f * mScale + mBackgroundTop;
+                mDrawPaint.setTextSize(40f);
+                mDrawStrokePaint.setTextSize(40f);
 
             }
             if(isSizeChanged
@@ -248,11 +257,7 @@ public class Sample extends CanvasWatchFaceService {
             }
 
             // Draw the background.
-            if (isInAmbientMode()) {
-                canvas.drawColor(Color.BLACK);
-            } else {
                 canvas.drawBitmap(mBackground, mBackgroundLeft, mBackgroundTop, mBitmapPaint);
-            }
 
             float hourRotate = (mTime.hour+ mTime.minute / 60f ) * 30;
             mMatrix.setTranslate(mHourLeft, mHourTop);
@@ -268,9 +273,10 @@ public class Sample extends CanvasWatchFaceService {
                 float secRot = mTime.second / 30f * (float) Math.PI;
                 float secX = (float) Math.sin(secRot) * mSecLength;
                 float secY = (float) -Math.cos(secRot) * mSecLength;
-                canvas.drawLine(mCenterX, mCenterY, mCenterX + secX, mCenterY + secY, mDrawPaint);
+                //canvas.drawLine(mCenterX, mCenterY, mCenterX + secX, mCenterY + secY, mDrawPaint);
+                mDrawPaint.setStrokeWidth(1f);
+                canvas.drawText("ぷ", mCenterX + secX, mCenterY + secY, mDrawPaint);
             }
-            canvas.drawCircle(mCenterX, mCenterY, mHoleRadius, mDrawPaint);
 
         }
 

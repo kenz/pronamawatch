@@ -2,5 +2,6 @@
 <resources>
     <color name="background">#000000</color>
     <color name="background2">#000088</color>
-    <color name="analog_hands">#ffffff</color>
+    <color name="analog_hands">#000000</color>
+    <color name="stroke">#aaaaaa</color>
 </resources>
